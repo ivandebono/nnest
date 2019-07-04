@@ -40,8 +40,8 @@ class Sampler(object):
         self.num_params = x_dim + num_derived
 
         def safe_loglike(x):
-            if len(x.shape) == 1:
-                assert x.shape[0] == self.x_dim
+            if len(np.shape(x)) == 1:
+                assert np.shape(x)[0] == self.x_dim
                 x = np.expand_dims(x, 0)
             logl = loglike(x)
             if len(logl.shape) == 0:
