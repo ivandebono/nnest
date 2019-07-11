@@ -6,17 +6,21 @@ Neural network accelerated nested and MCMC sampling. The target distribution is 
 ![latent](https://github.com/adammoss/nnest/blob/master/himmelblau.png)
 ![latent](https://github.com/adammoss/nnest/blob/master/gauss.png)
 
+Small modifications by Ivan Debono. This version works with montepython_nnest at https://github.com/ivandebono/montepython_NNest
+
+
 ### Installation
 
 NNest can be installed via pip
 ```
 pip install nnest
 ```
-Alternatively the latest version can be obtained by
+Alternatively, this version can be obtained by
 ```
-git clone https://github.com/adammoss/nnest
+git clone https://github.com/ivandebono/nnest
 cd nnest
 python setup.py install
+or python setup.py install --user (if you do not have administrator privileges e.g. for running on a cluster)
 ```
 
 ### Nested Sampling
