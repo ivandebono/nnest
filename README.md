@@ -20,7 +20,10 @@ Alternatively, this version can be obtained by
 git clone https://github.com/ivandebono/nnest
 cd nnest
 python setup.py install
-or python setup.py install --user (if you do not have administrator privileges e.g. for running on a cluster)
+```
+If you do not have administrator privileges (e.g. when running on a cluster), replace the last line by
+```
+python setup.py install --user
 ```
 
 ### Nested Sampling
