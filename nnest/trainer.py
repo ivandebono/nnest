@@ -156,7 +156,7 @@ class Trainer(object):
 
         counter = 0
 
-        for epoch in range(1, max_iters + 1):
+        for epoch in xrange(1, max_iters + 1):
 
             self.total_iters += 1
 
@@ -229,7 +229,7 @@ class Trainer(object):
                 logl = loglike(transform(x))
         else:
             if logl is None:
-                for i in range(max_start_tries):
+                for i in xrange(max_start_tries):
                     z = torch.randn(batch_size, self.z_dim, device=self.device)
                     x, _ = self.netG(z, mode='inverse')
                     x = x.detach().cpu().numpy()
@@ -260,7 +260,7 @@ class Trainer(object):
             if batch_size == 1:
                 files = [open(out_chain + '.txt', 'w')]
             else:
-                files = [open(out_chain + '_%s.txt' % (ib + 1), 'w') for ib in range(batch_size)]
+                files = [open(out_chain + '_%s.txt' % (ib + 1), 'w') for ib in xrange(batch_size)]
 
         for i in iters:
 
@@ -337,7 +337,7 @@ class Trainer(object):
 
             if out_chain is not None:
                 v = transform(x)
-                for ib in range(batch_size):
+                for ib in xrange(batch_size):
                     files[ib].write("%.5E " % 1)
                     files[ib].write("%.5E " % -logl[ib])
                     files[ib].write(" ".join(["%.5E" % vi for vi in v[ib]]))
@@ -358,7 +358,7 @@ class Trainer(object):
                 self.writer.add_figure('chain', fig, self.total_iters)
 
         if out_chain is not None:
-            for ib in range(batch_size):
+            for ib in xrange(batch_size):
                 files[ib].close()
 
         return samples, likes, scale, ncall
@@ -369,10 +369,10 @@ class Trainer(object):
         z.requires_grad_(True)
         x, _ = self.netG(z, mode='inverse')
         J = torch.stack([torch.autograd.grad(outputs=x[:, i], inputs=z, retain_graph=True,
-                                             grad_outputs=torch.ones(z.shape[0]))[0] for i in
-                         range(x.shape[1])]).permute(1, 0, 2)
+                                             grad_outputs=torch.ones(np.shape(z)[0]))[0] for i in
+                         xrange(np.shape(x)[1])]).permute(1, 0, 2)
         return torch.stack([torch.log(torch.abs(torch.det(J[i, :, :])))
-                            for i in range(x.shape[0])])
+                            for i in xrange(np.shape(x)[0])])
 
     def _train(self, epoch, model, loader, noise=0.0):
 

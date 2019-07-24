@@ -111,7 +111,7 @@ class NestedSampler(Sampler):
 
         if self.use_mpi:
             if self.mpi_rank == 0:
-                chunks = [[] for _ in range(self.mpi_size)]
+                chunks = [[] for _ in xrange(self.mpi_size)]
                 for i, chunk in enumerate(active_v):
                     chunks[i % self.mpi_size].append(chunk)
             else:
@@ -135,7 +135,7 @@ class NestedSampler(Sampler):
         first_time = True
         nb = self.mpi_size * mcmc_batch_size
 
-        for it in range(0, max_iters):
+        for it in xrange(0, max_iters):
 
             # Worst object in collection and its weight (= volume * likelihood)
             worst = np.argmin(active_logl)
@@ -181,7 +181,7 @@ class NestedSampler(Sampler):
                     samples = np.array(u)
                     likes = np.array(logl)
                     ncall += nc
-                for ib in range(0, self.mpi_size):
+                for ib in xrange(0, self.mpi_size):
                     active_u[worst] = samples[ib, :]
                     active_v[worst] = self.transform(active_u[worst])
                     active_logl[worst] = likes[ib]
@@ -199,9 +199,9 @@ class NestedSampler(Sampler):
                     if num_test_samples > 0:
                         # Test multiple chains from worst point to check mixing
                         init_x = np.concatenate(
-                            [active_u[worst:worst + 1, :] for i in range(num_test_samples)])
+                            [active_u[worst:worst + 1, :] for i in xrange(num_test_samples)])
                         logl = np.concatenate(
-                            [active_logl[worst:worst + 1] for i in range(num_test_samples)])
+                            [active_logl[worst:worst + 1] for i in xrange(num_test_samples)])
                         test_samples, _, scale, _ = self.trainer.sample(
                             loglike=self.loglike, init_x=init_x, logl=logl, loglstar=loglstar,
                             transform=self.transform, mcmc_steps=test_mcmc_steps + test_mcmc_burn_in,
@@ -235,7 +235,7 @@ class NestedSampler(Sampler):
                             ncall += sum(recv_nc)
                         else:
                             ncall += nc
-                    for ib in range(nb, self.mpi_size * mcmc_batch_size):
+                    for ib in xrange(nb, self.mpi_size * mcmc_batch_size):
                         nb += 1
                         if np.all(samples[ib, 0, :] != samples[ib, -1, :]) and likes[ib, -1] > loglstar:
                             active_u[worst] = samples[ib, -1, :]
@@ -275,7 +275,7 @@ class NestedSampler(Sampler):
                 break
 
         logvol = -len(saved_v) / self.num_live_points - np.log(self.num_live_points)
-        for i in range(self.num_live_points):
+        for i in xrange(self.num_live_points):
             logwt = logvol + active_logl[i]
             logz_new = np.logaddexp(logz, logwt)
             h = (np.exp(logwt - logz_new) * active_logl[i] + np.exp(logz - logz_new) * (h + logz) - logz_new)

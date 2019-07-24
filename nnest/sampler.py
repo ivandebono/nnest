@@ -55,8 +55,8 @@ class Sampler(object):
             self.transform = lambda x: x
         else:
             def safe_transform(x):
-                if len(x.shape) == 1:
-                    assert x.shape[0] == self.x_dim
+                if len(np.shape(x)) == 1:
+                    assert np.shape(x)[0] == self.x_dim
                     x = np.expand_dims(x, 0)
                 return transform(x)
             self.transform = safe_transform
@@ -118,17 +118,17 @@ class Sampler(object):
         return acceptance, ess, jump_distance
 
     def _save_samples(self, samples, weights, logl, min_weight=1e-30, outfile='chain'):
-        if len(samples.shape) == 2:
+        if len(np.shape(samples)) == 2:
             with open(os.path.join(self.logs['chains'], outfile + '.txt'), 'w') as f:
-                for i in range(samples.shape[0]):
+                for i in xrange(samples.shape[0]):
                     f.write("%.5E " % max(weights[i], min_weight))
                     f.write("%.5E " % -logl[i])
                     f.write(" ".join(["%.5E" % v for v in samples[i, :]]))
                     f.write("\n")
         elif len(samples.shape) == 3:
-            for ib in range(samples.shape[0]):
+            for ib in xrange(np.shape(samples)[0]):
                 with open(os.path.join(self.logs['chains'], outfile + '_%s.txt' % (ib+1)), 'w') as f:
-                    for i in range(samples.shape[1]):
+                    for i in xrange(np.shape(samples)[1]):
                         f.write("%.5E " % max(weights[ib, i], min_weight))
                         f.write("%.5E " % -logl[ib, i])
                         f.write(" ".join(["%.5E" % v for v in samples[ib, i, :]]))
