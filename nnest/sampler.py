@@ -44,7 +44,7 @@ class Sampler(object):
                 assert np.shape(x)[0] == self.x_dim
                 x = np.expand_dims(x, 0)
             logl = loglike(x)
-            if len(logl.shape) == 0:
+            if len(np.shape(logl)) == 0:
                 logl = np.expand_dims(logl, 0)
             logl[np.logical_not(np.isfinite(logl))] = -1e100
             return logl
@@ -107,9 +107,9 @@ class Sampler(object):
     def _chain_stats(self, samples, mean=None, std=None):
         acceptance = acceptance_rate(samples)
         if mean is None:
-            mean = np.mean(np.reshape(samples, (-1, samples.shape[2])), axis=0)
+            mean = np.mean(np.reshape(samples, (-1, np.shape(samples)[2])), axis=0)
         if std is None:
-            std = np.std(np.reshape(samples, (-1, samples.shape[2])), axis=0)
+            std = np.std(np.reshape(samples, (-1, np.shape(samples)[2])), axis=0)
         ess = effective_sample_size(samples, mean, std)
         jump_distance = mean_jump_distance(samples)
         self.logger.info(
@@ -120,12 +120,12 @@ class Sampler(object):
     def _save_samples(self, samples, weights, logl, min_weight=1e-30, outfile='chain'):
         if len(np.shape(samples)) == 2:
             with open(os.path.join(self.logs['chains'], outfile + '.txt'), 'w') as f:
-                for i in xrange(samples.shape[0]):
+                for i in xrange(np.shape(samples)[0]):
                     f.write("%.5E " % max(weights[i], min_weight))
                     f.write("%.5E " % -logl[i])
                     f.write(" ".join(["%.5E" % v for v in samples[i, :]]))
                     f.write("\n")
-        elif len(samples.shape) == 3:
+        elif len(np.shape(samples)) == 3:
             for ib in xrange(np.shape(samples)[0]):
                 with open(os.path.join(self.logs['chains'], outfile + '_%s.txt' % (ib+1)), 'w') as f:
                     for i in xrange(np.shape(samples)[1]):

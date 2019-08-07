@@ -4,7 +4,7 @@ import numpy as np
 
 
 def auto_correlation_time(x, s, mu, var):
-    b, t, d = x.shape
+    b, t, d = np.shape(x)
     act_ = np.zeros([d])
     for i in range(0, b):
         y = x[i] - mu
@@ -25,7 +25,7 @@ def effective_sample_size(x, mu, var):
     Make sure that `mu` and `var` are correct!
     """
     # batch size, step, dimension
-    b, t, d = x.shape
+    b, t, d = np.shape(x)
     ess_ = np.ones([d])
     for s in range(1, t):
         p = auto_correlation_time(x, s, mu, var)
@@ -40,25 +40,25 @@ def effective_sample_size(x, mu, var):
 
 
 def acceptance_rate(z):
-    cnt = z.shape[0] * (z.shape[1] - 1)
-    for i in range(0, z.shape[0]):
-        for j in range(1, z.shape[1]):
+    cnt = np.shape(z)[0] * (np.shape(z)[1] - 1)
+    for i in range(0, np.shape(z)[0]):
+        for j in range(1, np.shape(z)[1]):
             if np.min(np.equal(z[i, j - 1], z[i, j])):
                 cnt -= 1
-    return cnt / float(z.shape[0] * (z.shape[1] - 1))
+    return cnt / float(np.shape(z)[0] * (np.shape(z)[1] - 1))
 
 
 def mean_jump_distance(z):
     d = 0
-    cnt = z.shape[0] * (z.shape[1] - 1)
-    for i in range(0, z.shape[0]):
-        for j in range(1, z.shape[1]):
+    cnt = np.shape(z)[0] * (np.shape(z)[1] - 1)
+    for i in range(0, np.shape(z)[0]):
+        for j in range(1, np.shape(z)[1]):
             d += np.linalg.norm(z[i, j - 1] - z[i, j])
     return d / cnt
 
 
 def gelman_rubin_diagnostic(x, mu=None):
-    m, n = x.shape[0], x.shape[1]
+    m, n = np.shape(x)[0], np.shape(x)[1]
     theta = np.mean(x, axis=1)
     sigma = np.var(x, axis=1)
     # theta_m = np.mean(theta, axis=0)
@@ -88,5 +88,5 @@ def autocovariance(X, tau=0):
 
 
 def acl_spectrum(X, scale):
-    n = X.shape[0]
+    n = np.shape(X)[0]
     return np.array([autocovariance(X / scale, tau=t) for t in range(n-1)])
